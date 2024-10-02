@@ -28,6 +28,7 @@ class SignUpPage extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: "Password",
                 ),
+                obscureText: true,
               ),
               const Spacer(),
               ElevatedButton(
