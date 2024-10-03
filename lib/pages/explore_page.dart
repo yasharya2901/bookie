@@ -1,3 +1,4 @@
+import 'package:bookie/widgets/custom_search_bar.dart';
 import 'package:flutter/material.dart';
 
 class ExplorePage extends StatelessWidget {
@@ -7,10 +8,14 @@ class ExplorePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
-      children: [
-        Text("data")
-      ],
+    return Container(
+      margin: const EdgeInsets.only(left: 10, right: 10),
+      child: const Column(
+        children: [
+          CustomSearchBar(),
+          
+        ],
+      ),
     );
   }
 }
