@@ -1,7 +1,7 @@
 import 'package:bookie/pages/explore_page.dart';
 import 'package:bookie/pages/my_books_page.dart';
 import 'package:bookie/pages/my_chats_page.dart';
-import 'package:bookie/pages/top_bar.dart';
+import 'package:bookie/widgets/top_bar.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {

@@ -10,7 +10,7 @@ class CustomSearchBar extends StatelessWidget {
     return SearchBar(
       constraints: BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width,
-        minWidth: 300,
+        minWidth: 100,
         minHeight: 50,
       ),
       hintText: "Search for books",
