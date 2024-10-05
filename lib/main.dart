@@ -1,17 +1,28 @@
+import 'package:appwrite/appwrite.dart';
+import 'package:bookie/configs/appwrite_config.dart';
 import 'package:bookie/pages/home_page.dart';
 import 'package:bookie/pages/login_page.dart';
 import 'package:bookie/pages/signup_page.dart';
 import 'package:flutter/material.dart';
 
+
+Client client = Client();
+
 void main() {
-  runApp(const MyApp());
+  const String endpoint = String.fromEnvironment('APPWRITE_ENDPOINT');
+  const String projectId = String.fromEnvironment('APPWRITE_PROJECT_ID');
+  initializeAppwriteClient(client, endpoint, projectId);
+  Account account = Account(client);
+  runApp(MyApp(account: account));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Account account;
+  const MyApp({super.key, required this.account});
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -21,9 +32,9 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/login',
       routes: {
-        '/login': (context) => const LoginPage(),
-        '/signup': (context) => const SignUpPage(),
-        '/home': (context) => const HomePage(),
+        '/': (context) => const HomePage(),
+        '/login': (context) => LoginPage(account: account),
+        '/signup': (context) => SignUpPage(account: account),
       },
     );
   }
