@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login(String email, String password) async {
     try {
+      email = email.trim();
       await widget.account.createEmailPasswordSession(email: email, password: password);
       final user = await widget.account.get();
 
@@ -86,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () async {
                       await _login(emailController.text, passwordController.text);
                       if (loggedInUser != null && context.mounted) {
-                        Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
+                        Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
                       }
                     },
                     child: const Text("Sign In"),

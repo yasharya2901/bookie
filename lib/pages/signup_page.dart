@@ -24,6 +24,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<void> _signUp(String name, String email, String password) async {
     try {
+      name = name.trim();
+      email = email.trim();
       await widget.account.create(userId: ID.unique(), email: email, password: password);
       await widget.account.createEmailPasswordSession(email: email, password: password);
       await widget.account.updateName(name: name);
@@ -93,7 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     onPressed: () async {
                       await _signUp(nameController.text, emailController.text, passwordController.text);
                       if (signedUpUser != null && context.mounted) {
-                        Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
+                        Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
                       }
                     },
                     child: const Text("Sign Up"),
