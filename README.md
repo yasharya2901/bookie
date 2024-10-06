@@ -1,16 +1,54 @@
 # bookie
 
-A new Flutter project.
+The app that connects you with the ones that matches your taste in books.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+1. Clone the repository
+    ```bash
+    git clone https://github.com/yasharya2901/bookie.git
+    ```
 
-A few resources to get you started if this is your first Flutter project:
+2. Create a copy of `.env.example` and rename it to `.env`
+    ```bash
+    cp .env.example .env
+    ```
+    Update the environment variables in `.env` file.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+3. Update the dependencies
+    ```bash
+    flutter pub get
+    ```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+4. Run the app
+    ```bash
+    flutter run flutter run --dart-define=APPWRITE_ENDPOINT=<YOUR_ENDPOINT> --dart-define=APPWRITE_PROJECT_ID=<YOUR_PROJECT_ID>
+    ```
+
+5. (Optional) Change `launch.json` in `.vscode` folder to set the environment variables for debugging.
+    ```json
+    {
+        "configurations": [
+            {
+                "name": "bookie",
+                "request": "launch",
+                "type": "dart",
+                "toolArgs": ["--dart-define-from-file=.env"]
+            },
+            {
+                "name": "bookie (profile mode)",
+                "request": "launch",
+                "type": "dart",
+                "flutterMode": "profile",
+                "toolArgs": ["--dart-define-from-file=.env"]
+            },
+            {
+                "name": "bookie (release mode)",
+                "request": "launch",
+                "type": "dart",
+                "flutterMode": "release",
+                "toolArgs": ["--dart-define-from-file=.env"]
+            }
+        ]
+    }
+    ```
