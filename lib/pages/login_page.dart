@@ -1,8 +1,11 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:bookie/configs/global_user_state_manager.dart';
+import 'package:bookie/providers/user_provider.dart';
 import 'package:bookie/widgets/error.dart';
 import 'package:flutter/material.dart';
 import 'package:appwrite/models.dart' as models;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   final Account account;
@@ -25,6 +28,12 @@ class _LoginPageState extends State<LoginPage> {
       email = email.trim();
       await widget.account.createEmailPasswordSession(email: email, password: password);
       final user = await widget.account.get();
+
+      if (mounted){
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        setUserName(user.name, userProvider);
+        setUserVerificationStatus(user.emailVerification, userProvider);
+      }
 
       // Set the user_id in the persistent storage
       const storage = FlutterSecureStorage();

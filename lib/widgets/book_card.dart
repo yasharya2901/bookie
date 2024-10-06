@@ -21,7 +21,7 @@ class BookCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Constrain image height to avoid overflow
-              Container(
+              SizedBox(
                 height: 150, // Fixed height for the image
                 child: Image.network(
                   book.coverUrl,
