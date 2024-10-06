@@ -22,7 +22,7 @@ The app that connects you with the ones that matches your taste in books.
 
 4. Run the app
     ```bash
-    flutter run flutter run --dart-define=APPWRITE_ENDPOINT=<YOUR_ENDPOINT> --dart-define=APPWRITE_PROJECT_ID=<YOUR_PROJECT_ID>
+    flutter run --dart-define=APPWRITE_ENDPOINT=<YOUR_ENDPOINT> --dart-define=APPWRITE_PROJECT_ID=<YOUR_PROJECT_ID>
     ```
 
 5. (Optional) Change `launch.json` in `.vscode` folder to set the environment variables for debugging.
