@@ -9,7 +9,8 @@ import 'package:provider/provider.dart';
 
 class SignUpPage extends StatefulWidget {
   final Account account;
-  const SignUpPage({super.key, required this.account});
+  final Avatars avatars;
+  const SignUpPage({super.key, required this.account, required this.avatars});
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
@@ -33,9 +34,11 @@ class _SignUpPageState extends State<SignUpPage> {
       await widget.account.createEmailPasswordSession(email: email, password: password);
       await widget.account.updateName(name: name);
       final user = await widget.account.get();
+      final initials = await widget.avatars.getInitials(name: user.name, width: 50, height: 50);
       if (mounted){
         final userProvider = Provider.of<UserProvider>(context, listen: false);
         setUserName(user.name, userProvider);
+        setUserAvatar(initials, userProvider);
         setUserVerificationStatus(user.emailVerification, userProvider);
       }
       // Set the user_id in the persistent storage

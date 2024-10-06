@@ -1,7 +1,10 @@
 import 'package:bookie/api/mock_data.dart';
+import 'package:bookie/providers/user_provider.dart';
 import 'package:bookie/widgets/book_card.dart';
 import 'package:bookie/widgets/custom_search_bar.dart';
+import 'package:bookie/widgets/user_verification_snack_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ExplorePage extends StatelessWidget {
   const ExplorePage({
@@ -10,8 +13,14 @@ class ExplorePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MockData.initializeBooks();
+    MockData();
     var books = MockData.books;
+
+    final userProvider = Provider.of<UserProvider>(context);
+
+    // Check if the user is not verified and show a SnackBar
+    showVerificationSnackBar(context, userProvider.userVerified);
+
 
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 10),

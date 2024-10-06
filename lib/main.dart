@@ -49,9 +49,9 @@ class MyApp extends StatelessWidget {
       home: InitialPage(account: account, secureStorage: secureStorage, avatars: avatars),
       routes: {
         '/home': (context) => const HomePage(),
-        '/login': (context) => LoginPage(account: account),
-        '/signup': (context) => SignUpPage(account: account),
-        '/settings': (context) => const UserSettingsPage(),
+        '/login': (context) => LoginPage(account: account, avatars: avatars),
+        '/signup': (context) => SignUpPage(account: account, avatars: avatars),
+        '/settings': (context) => UserSettingsPage(account: account),
       },
     );
   }

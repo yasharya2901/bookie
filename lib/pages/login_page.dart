@@ -9,7 +9,8 @@ import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   final Account account;
-  const LoginPage({super.key, required this.account});
+  final Avatars avatars;
+  const LoginPage({super.key, required this.account, required this.avatars});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -28,10 +29,12 @@ class _LoginPageState extends State<LoginPage> {
       email = email.trim();
       await widget.account.createEmailPasswordSession(email: email, password: password);
       final user = await widget.account.get();
+      final initials = await widget.avatars.getInitials(name: user.name, width: 50, height: 50);
 
       if (mounted){
         final userProvider = Provider.of<UserProvider>(context, listen: false);
         setUserName(user.name, userProvider);
+        setUserAvatar(initials, userProvider);
         setUserVerificationStatus(user.emailVerification, userProvider);
       }
 
