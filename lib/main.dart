@@ -20,12 +20,13 @@ void main() {
   initializeAppwriteClient(client, endpoint, projectId);
   Account account = Account(client);
   Avatars avatars = Avatars(client);
+  Databases databases = Databases(client);
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider()),
       ],
-      child: MyApp(account: account, secureStorage: secureStorage, avatars:avatars),
+      child: MyApp(account: account, secureStorage: secureStorage, avatars:avatars, databases: databases,),
     )
   );
 }
@@ -34,7 +35,8 @@ class MyApp extends StatelessWidget {
   final Account account;
   final FlutterSecureStorage secureStorage;
   final Avatars avatars;
-  const MyApp({super.key, required this.account, required this.secureStorage, required this.avatars});
+  final Databases databases;
+  const MyApp({super.key, required this.account, required this.secureStorage, required this.avatars, required this.databases});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/home': (context) => const HomePage(),
         '/login': (context) => LoginPage(account: account, avatars: avatars),
-        '/signup': (context) => SignUpPage(account: account, avatars: avatars),
+        '/signup': (context) => SignUpPage(account: account, avatars: avatars, databases: databases),
         '/settings': (context) => UserSettingsPage(account: account),
       },
     );
