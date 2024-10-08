@@ -11,32 +11,23 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 
-Client client = Client();
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
 void main() {
-  const String endpoint = String.fromEnvironment('APPWRITE_ENDPOINT');
-  const String projectId = String.fromEnvironment('APPWRITE_PROJECT_ID');
-  initializeAppwriteClient(client, endpoint, projectId);
-  Account account = Account(client);
-  Avatars avatars = Avatars(client);
-  Databases databases = Databases(client);
+  initializeAppwriteClient();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider()),
       ],
-      child: MyApp(account: account, secureStorage: secureStorage, avatars:avatars, databases: databases,),
+      child: const MyApp(secureStorage: secureStorage),
     )
   );
 }
 
 class MyApp extends StatelessWidget {
-  final Account account;
   final FlutterSecureStorage secureStorage;
-  final Avatars avatars;
-  final Databases databases;
-  const MyApp({super.key, required this.account, required this.secureStorage, required this.avatars, required this.databases});
+  const MyApp({super.key, required this.secureStorage});
 
   @override
   Widget build(BuildContext context) {
@@ -48,22 +39,21 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.purple,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: InitialPage(account: account, secureStorage: secureStorage, avatars: avatars),
+      home: InitialPage(secureStorage: secureStorage),
       routes: {
         '/home': (context) => const HomePage(),
-        '/login': (context) => LoginPage(account: account, avatars: avatars),
-        '/signup': (context) => SignUpPage(account: account, avatars: avatars, databases: databases),
-        '/settings': (context) => UserSettingsPage(account: account),
+        '/login': (context) => const LoginPage(),
+        '/signup': (context) => const SignUpPage(),
+        '/settings': (context) => const UserSettingsPage(),
       },
     );
   }
 }
 
 class InitialPage extends StatefulWidget {
-  final Account account;
-  final Avatars avatars;
+  
   final FlutterSecureStorage secureStorage;
-  const InitialPage({super.key, required this.account, required this.secureStorage, required this.avatars});
+  const InitialPage({super.key, required this.secureStorage});
 
   @override
   State<InitialPage> createState() => _InitialPageState();
@@ -77,15 +67,23 @@ class _InitialPageState extends State<InitialPage> {
   }
 
   Future<void> _checkAndNavigate() async {
+    Account? account = appwriteAccount();
+    Avatars? avatars = appwriteAvatars();
     String? userId = await widget.secureStorage.read(key: 'user_id');
     if (!mounted) return; // Check if the widget is still mounted
 
     if (userId != null) {
       try {
-        final user = await widget.account.get();
+        final user = await account?.get();
+        if (user == null) {
+          throw Exception('Appwrite User not found');
+        }
         if (!mounted) return; // Check if the widget is still mounted
         final userProvider = Provider.of<UserProvider>(context, listen: false);
-        final initials = await widget.avatars.getInitials(name: user.name, width: 50, height: 50);
+        final initials = await avatars?.getInitials(name: user.name, width: 50, height: 50);
+        if (initials == null) {
+          throw Exception('Failed to get user initials object');
+        }
         setUserName(user.name, userProvider);
         setUserVerificationStatus(user.emailVerification, userProvider);
         setUserAvatar(initials, userProvider);

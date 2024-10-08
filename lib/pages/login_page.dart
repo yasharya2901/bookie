@@ -1,4 +1,5 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:bookie/configs/appwrite_config.dart';
 import 'package:bookie/configs/global_user_state_manager.dart';
 import 'package:bookie/providers/user_provider.dart';
 import 'package:bookie/widgets/error.dart';
@@ -8,9 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
-  final Account account;
-  final Avatars avatars;
-  const LoginPage({super.key, required this.account, required this.avatars});
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -26,10 +25,20 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login(String email, String password) async {
     try {
+      Avatars? avatars = appwriteAvatars();
+      if (avatars == null) {
+        throw Exception("Avatars is not initialized");
+      }
+
+      Account? account = appwriteAccount();
+      if (account == null) {
+        throw Exception("Account is not initialized");
+      }
+
       email = email.trim();
-      await widget.account.createEmailPasswordSession(email: email, password: password);
-      final user = await widget.account.get();
-      final initials = await widget.avatars.getInitials(name: user.name, width: 50, height: 50);
+      await account.createEmailPasswordSession(email: email, password: password);
+      final user = await account.get();
+      final initials = await avatars.getInitials(name: user.name, width: 50, height: 50);
 
       if (mounted){
         final userProvider = Provider.of<UserProvider>(context, listen: false);

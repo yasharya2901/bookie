@@ -1,4 +1,5 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:bookie/configs/appwrite_config.dart';
 import 'package:bookie/configs/global_user_state_manager.dart';
 import 'package:bookie/providers/user_provider.dart';
 import 'package:bookie/widgets/error.dart';
@@ -9,14 +10,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 class SignUpPage extends StatefulWidget {
-  final Account account;
-  final Avatars avatars;
-  final Databases databases;
   const SignUpPage(
-      {super.key,
-      required this.account,
-      required this.avatars,
-      required this.databases});
+      {super.key});
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
@@ -68,17 +63,23 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future<void> _signUp(String name, String email, String password) async {
+    Account? account = appwriteAccount();
+    Databases? databases = appwriteDatabase();
+    Avatars? avatars = appwriteAvatars();
+
     try {
       name = name.trim();
       email = email.trim();
       final Position position = await _determinePosition();
-      await widget.account
-          .create(userId: ID.unique(), email: email, password: password);
-      await widget.account
+      await account?.create(userId: ID.unique(), email: email, password: password);
+      if (account == null) {
+        throw Exception('Appwrite Account not found');
+      }
+      await account
           .createEmailPasswordSession(email: email, password: password);
-      await widget.account.updateName(name: name);
-      final user = await widget.account.get();
-      await widget.databases.createDocument(
+      await account.updateName(name: name);
+      final user = await account.get();
+      await databases?.createDocument(
           databaseId: const String.fromEnvironment('APPWRITE_DATABASE_ID'),
           collectionId: const String.fromEnvironment('APPWRITE_COLLECTION_USERS_ID'),
           documentId: user.$id,
@@ -86,8 +87,13 @@ class _SignUpPageState extends State<SignUpPage> {
             "latitude": position.latitude,
             "longitude": position.longitude,
           });
-      final initials = await widget.avatars
-          .getInitials(name: user.name, width: 50, height: 50);
+      if (databases == null) {
+        throw Exception('Appwrite Database not found');
+      }
+      final initials = await avatars?.getInitials(name: user.name, width: 50, height: 50);
+      if (initials == null) {
+        throw Exception('Failed to get user initials object');
+      }
       if (mounted) {
         final userProvider = Provider.of<UserProvider>(context, listen: false);
         setUserName(user.name, userProvider);

@@ -1,12 +1,12 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:bookie/configs/appwrite_config.dart';
 import 'package:bookie/configs/global_user_state_manager.dart';
 import 'package:bookie/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class UserSettingsPage extends StatefulWidget {
-  final Account account;
-  const UserSettingsPage({super.key, required this.account});
+  const UserSettingsPage({super.key});
 
   @override
   State<UserSettingsPage> createState() => _UserSettingsPageState();
@@ -16,9 +16,14 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    Account? account = appwriteAccount();
+    if (account == null) {
+      throw Exception("Account is not initialized");
+    }
+
     final UserProvider userProvider = Provider.of<UserProvider>(context);
     Future<void> logout() async {
-      await widget.account.deleteSession(sessionId: 'current');
+      await account.deleteSession(sessionId: 'current');
       clearUser(userProvider);
     }
     return Scaffold(

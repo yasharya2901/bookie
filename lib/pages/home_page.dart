@@ -20,9 +20,9 @@ class _HomePageState extends State<HomePage> {
     NavigationDestination(icon: Icon(Icons.chat), label: "My Chats"),
   ];
 
-  final List<Widget> _pages = const <Widget>[ExplorePage(), MyBooksPage(), MyChatPage()];
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _pages = <Widget>[const ExplorePage(), MyBooksPage(), const MyChatPage()];
     return Scaffold(
       appBar: AppBar(
         title: const TopBarContent(),

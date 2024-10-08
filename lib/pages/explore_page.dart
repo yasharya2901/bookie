@@ -26,6 +26,7 @@ class ExplorePage extends StatelessWidget {
       margin: const EdgeInsets.only(left: 10, right: 10),
       child: Column(
         children: [
+          const SizedBox(height: 10),
           const CustomSearchBar(), // Search bar at the top
           const SizedBox(height: 10),
           Expanded(
