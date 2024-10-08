@@ -52,3 +52,8 @@ The app that connects you with the ones that matches your taste in books.
         ]
     }
     ```
+
+## Known Issues
+
+### Windows Build
+The package `geolocator` uses [`Microsoft.Windows.CppWinRT`](https://www.nuget.org/packages/Microsoft.Windows.CppWinRT/) package to access the Windows Runtime APIs. If you face any error while building the app for Windows, you can install the [Nuget](https://www.nuget.org/downloads) package manager to install the required package. And, paste it under `build/windows/x64/packages` folder. Make sure to comment the line in the particular CMake file that throws any error related to `Microsoft.Windows.CppWinRT` package.
