@@ -1,4 +1,7 @@
-import 'package:bookie/api/mock_data.dart';
+import 'package:appwrite/models.dart';
+import 'package:bookie/api/fetch_book.dart';
+import 'package:bookie/configs/appwrite_config.dart';
+import 'package:bookie/model/book.dart';
 import 'package:bookie/widgets/book_card.dart';
 import 'package:flutter/material.dart';
 
@@ -10,14 +13,13 @@ class MyBooksPage extends StatefulWidget {
 }
 
 class _MyBooksPageState extends State<MyBooksPage> {
-  final books = MockData.books;
-  void _loadMyBooks() async {
-    // Load books from the API
-    
-  }
 
   @override
   Widget build(BuildContext context) {
+    User? user = appwriteUser();
+    if (user == null) {
+      return const Center(child: Text("User not found"));
+    }
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 10),
       child: Column(
@@ -25,23 +27,46 @@ class _MyBooksPageState extends State<MyBooksPage> {
           const SizedBox(height: 10),
           Container(alignment: Alignment.topLeft, padding: const EdgeInsets.only(left: 10), child: const Text("My Books", style: TextStyle(fontSize: 20),),), // Search bar at the top
           const SizedBox(height: 10),
-          ElevatedButton(onPressed: _loadMyBooks, child: const Text("Load My Books")),
-          Expanded(
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 200, // Maximum width for each book card
-                mainAxisSpacing: 10, // Spacing between rows
-                crossAxisSpacing: 10, // Spacing between columns
-                childAspectRatio: 0.67, // Adjust card aspect ratio
-                mainAxisExtent: 280, // Maximum height for each book card
-              ),
-              itemCount: books.length,
-              itemBuilder: (context, index) {
-                // Remove the SizedBox and rely on constraints in BookCard
-                return BookCard(book: books[index]);
-              },
-            ),
-          ),
+          FutureBuilder(
+            future: fetchUserBooks(user.$id), 
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  return const Text('none');
+                case ConnectionState.waiting:
+                case ConnectionState.active:
+                  return const Center(child: CircularProgressIndicator());
+                case ConnectionState.done:
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+                  if (snapshot.hasData) {
+                    List<Book> books = snapshot.data;
+                    return Expanded(
+                      child: GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 200, // Maximum width for each book card
+                          mainAxisSpacing: 10, // Spacing between rows
+                          crossAxisSpacing: 10, // Spacing between columns
+                          childAspectRatio: 0.67, // Adjust card aspect ratio
+                          mainAxisExtent: 280, // Maximum height for each book card
+                        ),
+                        itemCount: books.length,
+                        itemBuilder: (context, index) {
+                          return BookCard(book: books[index]);
+                        },
+                      ),
+                    );
+                  } else {
+                    return const Text("No books found");
+                  }
+                default:
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+              }
+            }
+          )
         ],
       ),
     );

@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _pages = <Widget>[const ExplorePage(), MyBooksPage(), const MyChatPage()];
+    final List<Widget> pages = <Widget>[const ExplorePage(), const MyBooksPage(), const MyChatPage()];
     return Scaffold(
       appBar: AppBar(
         title: const TopBarContent(),
@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
         selectedIndex: _selectedIndex,
         destinations: _bottomAppBarItems,
       ),
-      body: _pages[_selectedIndex],
+      body: pages[_selectedIndex],
     );
   }
 }
