@@ -13,8 +13,9 @@ import 'package:provider/provider.dart';
 
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
-void main() {
-  initializeAppwriteClient();
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeAppwriteClient();
   runApp(
     MultiProvider(
       providers: [

@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
+import 'package:flutter/foundation.dart';
 
 
 Client client = Client();
@@ -13,15 +14,19 @@ User? _user;
 
 
 
-void initializeAppwriteClient() async{
+Future<void> initializeAppwriteClient() async{
   client
     .setEndpoint(endpoint)  // Access endpoint from env file
     .setProject(projectId);
 
+  if (kDebugMode) {
+    print("Appwrite Project ID: $projectId");
+    print("Appwrite Endpoint: $endpoint");
+  }  
+
   _databases = Databases(client);
   _account = Account(client);
   _avatars = Avatars(client);
-  _user = await _account?.get();
 }
 
 Databases? appwriteDatabase() {
@@ -36,6 +41,7 @@ Account? appwriteAccount() {
   return _account;
 }
 
-User? appwriteUser() {
+Future<User?> appwriteUser() async {
+  _user = await _account?.get();
   return _user;
 }

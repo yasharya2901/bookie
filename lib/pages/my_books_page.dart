@@ -16,59 +16,84 @@ class _MyBooksPageState extends State<MyBooksPage> {
 
   @override
   Widget build(BuildContext context) {
-    User? user = appwriteUser();
-    if (user == null) {
-      return const Center(child: Text("User not found"));
-    }
-    return Container(
-      margin: const EdgeInsets.only(left: 10, right: 10),
-      child: Column(
-        children: [
-          const SizedBox(height: 10),
-          Container(alignment: Alignment.topLeft, padding: const EdgeInsets.only(left: 10), child: const Text("My Books", style: TextStyle(fontSize: 20),),), // Search bar at the top
-          const SizedBox(height: 10),
-          FutureBuilder(
-            future: fetchUserBooks(user.$id), 
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                  return const Text('none');
-                case ConnectionState.waiting:
-                case ConnectionState.active:
-                  return const Center(child: CircularProgressIndicator());
-                case ConnectionState.done:
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  }
-                  if (snapshot.hasData) {
-                    List<Book> books = snapshot.data;
-                    return Expanded(
-                      child: GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 200, // Maximum width for each book card
-                          mainAxisSpacing: 10, // Spacing between rows
-                          crossAxisSpacing: 10, // Spacing between columns
-                          childAspectRatio: 0.67, // Adjust card aspect ratio
-                          mainAxisExtent: 280, // Maximum height for each book card
-                        ),
-                        itemCount: books.length,
-                        itemBuilder: (context, index) {
-                          return BookCard(book: books[index]);
-                        },
-                      ),
-                    );
-                  } else {
-                    return const Text("No books found");
-                  }
-                default:
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-              }
-            }
-          )
-        ],
-      ),
-    );
+    return FutureBuilder<User?>(
+        future: appwriteUser(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(child: Text("User not found"));
+          }
+          User user = snapshot.data!;
+          return Container(
+            margin: const EdgeInsets.only(left: 10, right: 10),
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                Container(
+                  alignment: Alignment.topLeft,
+                  padding: const EdgeInsets.only(left: 10),
+                  child: const Text(
+                    "My Books",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ), // Search bar at the top
+                const SizedBox(height: 10),
+                FutureBuilder(
+                    future: fetchUserBooks(user.$id),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                          return const Text('none');
+                        case ConnectionState.waiting:
+                        case ConnectionState.active:
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        case ConnectionState.done:
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          }
+                          if (snapshot.hasData) {
+                            List<Book> books = snapshot.data;
+                            if (books.isEmpty) {
+                              return const Center(
+                                child: Text("No books found"),
+                              );
+                            }
+                            return Expanded(
+                              child: GridView.builder(
+                                gridDelegate:
+                                    const SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent:
+                                      200, // Maximum width for each book card
+                                  mainAxisSpacing: 10, // Spacing between rows
+                                  crossAxisSpacing:
+                                      10, // Spacing between columns
+                                  childAspectRatio:
+                                      0.67, // Adjust card aspect ratio
+                                  mainAxisExtent:
+                                      280, // Maximum height for each book card
+                                ),
+                                itemCount: books.length,
+                                itemBuilder: (context, index) {
+                                  return BookCard(book: books[index]);
+                                },
+                              ),
+                            );
+                          } else {
+                            return const Text("No books found");
+                          }
+                        default:
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                      }
+                    })
+              ],
+            ),
+          );
+        });
   }
 }
