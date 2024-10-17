@@ -1,7 +1,9 @@
 import 'package:appwrite/models.dart';
 import 'package:bookie/configs/appwrite_config.dart';
 import 'package:appwrite/appwrite.dart';
+import 'package:bookie/model/author.dart';
 import 'package:bookie/model/book.dart';
+import 'package:bookie/model/categories.dart';
 
 
 
@@ -21,12 +23,34 @@ Future<List<Book>> fetchUserBooks(String userId) async {
     
     List<Book> books = [];
     for (Document document in response.documents) {
+      List<Author> authorList = [];
+      if (document.data['books']['authors'] != null) {
+        var authorNames = document.data['books']['authors'];
+        for (int i = 0; i < authorNames.length; i++) {
+          authorList.add(Author(authorNames[i]['\$id'], authorNames[i]['name']));
+        }
+      }
+
+      List<Categories> categoriesList = [];
+      if (document.data['books']['categories'] != null) {
+        var categoryNames = document.data['books']['categories'];
+        for (int i = 0; i < categoryNames.length; i++) {
+          categoriesList.add(Categories(categoryNames[i]['\$id'], categoryNames[i]['name']));
+        }
+      }
+
       Book book = Book(
         document.$id,
         document.data['books']['title'],
-        document.data['books']['authors'][0]['name'],
-        "https://placehold.it/200x300"
+        document.data['books']['description'],
+        authorList,
+        "https://lwn.net/Kernel/LDD3/cover.gif",
+        categoriesList,
       );
+
+      if (document.data['books']['release_date'] != null) {
+        book.publishedDate = DateTime.parse(document.data['books']['release_date']);
+      }
       books.add(book);
     }
     return books;
