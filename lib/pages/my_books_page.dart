@@ -13,7 +13,6 @@ class MyBooksPage extends StatefulWidget {
 }
 
 class _MyBooksPageState extends State<MyBooksPage> {
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<User?>(
@@ -78,7 +77,16 @@ class _MyBooksPageState extends State<MyBooksPage> {
                                 ),
                                 itemCount: books.length,
                                 itemBuilder: (context, index) {
-                                  return BookCard(book: books[index]);
+                                  return BookCard(
+                                    book: books[index],
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/bookDetails',
+                                        arguments: books[index],
+                                      );
+                                    },
+                                  );
                                 },
                               ),
                             );

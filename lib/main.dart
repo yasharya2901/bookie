@@ -3,6 +3,7 @@ import 'package:bookie/configs/appwrite_config.dart';
 import 'package:bookie/configs/global_user_state_manager.dart';
 import 'package:bookie/pages/home_page.dart';
 import 'package:bookie/pages/login_page.dart';
+import 'package:bookie/pages/my_book_detail_page.dart';
 import 'package:bookie/pages/signup_page.dart';
 import 'package:bookie/pages/user_settings_page.dart';
 import 'package:bookie/providers/user_provider.dart';
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/signup': (context) => const SignUpPage(),
         '/settings': (context) => const UserSettingsPage(),
+        '/bookDetails': (context) => const MyBookDetails(),
       },
     );
   }

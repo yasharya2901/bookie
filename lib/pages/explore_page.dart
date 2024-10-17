@@ -41,7 +41,7 @@ class ExplorePage extends StatelessWidget {
               itemCount: books.length,
               itemBuilder: (context, index) {
                 // Remove the SizedBox and rely on constraints in BookCard
-                return BookCard(book: books[index]);
+                return BookCard(book: books[index], onTap: () {},);
               },
             ),
           ),

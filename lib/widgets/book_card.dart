@@ -4,17 +4,19 @@ import 'package:flutter/material.dart';
 
 class BookCard extends StatelessWidget {
   final Book book;
+  final VoidCallback onTap;
 
   const BookCard({
     super.key,
     required this.book,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.only(top: 20),
           child: Column(
@@ -39,7 +41,7 @@ class BookCard extends StatelessWidget {
                     maxLines: 2,
                   ),
                   subtitle: Text(
-                    book.author,
+                    book.author.map((author) => author.authorName).join(", "),
                     style: AppText.subheading3,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
